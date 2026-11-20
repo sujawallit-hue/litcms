@@ -1,6 +1,9 @@
 {
-  "name":"laar-institute-management",
-  "version":"2.0.0",
-  "private":true,
-  "dependencies":{"@netlify/blobs":"latest","jsonwebtoken":"latest"}
+  "name": "laar-institute-management-system",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Laar Institute of Technology management system for Netlify",
+  "dependencies": {
+    "@netlify/blobs": "^9.0.0"
+  }
 }

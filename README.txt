@@ -1,57 +1,69 @@
-LAAR INSTITUTE MANAGEMENT SYSTEM — NETLIFY EDITION
-==================================================
+LAAR INSTITUTE MANAGEMENT SYSTEM — FINAL NETLIFY BUILD
+========================================================
 
-This version is designed for Netlify:
-- Static frontend in /public
-- Netlify serverless function API
-- Netlify Blobs for persistent application data
-- Principal login is server-side
-- No Gmail/Google login required
+This version fixes the previous frontend error:
+    "Uncaught TypeError: login is not a function"
 
-PRINCIPAL LOGIN
+The login handler is now named loginUser and is attached with addEventListener.
+There is no inline onclick="login()" and no form field named "login".
+
+LOGIN
+-----
 Username: litprincicpal
 Password: lit2026
 
-The username/password are NOT displayed on the login screen. A user must enter them.
+NETLIFY DEPLOYMENT
+------------------
+This project is designed for Netlify Git deployment.
 
-DEPLOY
-1. Upload this folder/repository to GitHub OR drag the ZIP/folder into a Netlify deploy workflow.
-2. Netlify detects netlify.toml.
-3. The site uses the /public folder and /netlify/functions.
-4. The application stores records in Netlify Blobs.
+Required repository structure:
+    netlify.toml
+    package.json
+    public/index.html
+    netlify/functions/api.js
 
-IMPORTANT FIRST STEP
-For production, set an environment variable in Netlify:
-AUTH_SECRET = a long random secret
-The app has a fallback secret only so a first deployment can start; replace it before real use.
+Netlify configuration:
+    Publish directory: public
+    Functions directory: netlify/functions
+    Build command: leave blank
 
-NETLIFY BLOBS
-The application uses the @netlify/blobs package and a persistent store named "laar-data".
-If your Netlify account/site setup requires Blobs to be enabled or linked, enable Netlify Blobs in the site's storage section.
+If you already connected your Netlify project to GitHub:
+1. Replace the contents of the GitHub repository with ALL files from this ZIP.
+2. Commit/push the changes.
+3. Netlify will automatically create a new deploy.
+4. Wait until the deploy says Published.
+5. Open the site and login.
 
-FEATURES
-- Principal login
-- Student management
-- Teacher management
-- Course management
-- Shifts
-- Batches
-- Course modules/topics
-- Daily classes
-- Attendance
-- Individual progress
-- Practical work
-- Tests/results
-- Dashboard
-- Responsive mobile UI
+OPTIONAL ENVIRONMENT VARIABLES
+------------------------------
+For better security you can add:
+    PRINCIPAL_USERNAME = litprincicpal
+    PRINCIPAL_PASSWORD = lit2026
 
-NOTE
-This is a practical V2 starter. For a larger production deployment, add:
-- granular teacher logins/permissions
-- password reset
-- file/photo uploads
-- PDF/Excel reports
-- audit logs UI
-- email notifications
-- backups/export
-- richer filtering and editing forms
+If they are not added, the app uses the requested default credentials above.
+
+DATA STORAGE
+------------
+The API uses Netlify Blobs site-wide storage named "laar-data".
+Data persists between deployments.
+
+FUNCTION ENDPOINTS
+------------------
+POST /api/login
+POST /api/logout
+GET  /api/health
+GET  /api/data
+POST /api/data
+DELETE /api/data
+
+IMPORTANT
+---------
+Do not use Netlify Drop for this project after the GitHub connection is established.
+Use the GitHub-connected project so Netlify builds and deploys the serverless function.
+
+If login ever fails:
+- Open Netlify > Cloud compute > Functions
+- Confirm "api" exists
+- Open the function logs
+- Test https://YOUR-SITE.netlify.app/api/health
+It should return JSON with ok: true.
