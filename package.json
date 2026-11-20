@@ -1,8 +1,11 @@
 {
   "name": "laar-institute-management-system",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": true,
-  "description": "Laar Institute of Technology management system for Netlify",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@netlify/blobs": "^9.0.0"
   }
