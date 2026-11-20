@@ -1,47 +1,244 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Laar Institute Management System</title><style>
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f4f7fb;color:#172333}.hidden{display:none!important}
-.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#102a43,#1b496d)}.loginbox{width:390px;background:#fff;border-radius:16px;padding:32px;box-shadow:0 20px 60px #0003}.brand{font-size:28px;font-weight:800;color:#102a43}.brand span{color:#d4a72c}
-input,select,textarea{width:100%;padding:10px;border:1px solid #ccd7e2;border-radius:7px;font:inherit;background:#fff}textarea{min-height:80px}label{font-size:13px;font-weight:700;display:block;margin:10px 0 5px}
-button,.btn{background:#1261a0;color:#fff;border:0;border-radius:7px;padding:10px 15px;cursor:pointer;font-weight:700;text-decoration:none}.danger{color:#a52222}.err{background:#fdeaea;color:#9e2323;padding:10px;border-radius:7px;margin:12px 0}.app{display:flex;min-height:100vh}.side{width:245px;background:#102a43;color:#fff;padding:20px;position:fixed;top:0;bottom:0}.side h2{margin:0 0 22px}.side button{display:block;width:100%;text-align:left;background:transparent;margin:3px 0}.side button:hover{background:#1d4668}.content{margin-left:245px;padding:28px;width:calc(100% - 245px)}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 3px 16px #18344a12;margin-bottom:16px}.stat b{font-size:30px;display:block;margin-top:6px}.muted{color:#718096}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.full{grid-column:1/-1}.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.table{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #e7edf3;text-align:left;white-space:nowrap}th{font-size:12px;background:#f8fafc}.bar{height:13px;background:#e4ebf2;border-radius:20px;overflow:hidden}.bar i{display:block;height:100%;background:#1261a0}.pill{padding:4px 8px;border-radius:15px;background:#edf4fa;font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}.topline{display:flex;justify-content:space-between;align-items:center;gap:10px}.search{max-width:260px}
-@media(max-width:850px){.side{transform:translateX(-100%);z-index:5}.app.open .side{transform:translateX(0)}.content{margin-left:0;width:100%;padding:16px}.cards{grid-template-columns:1fr 1fr}.grid,.form{grid-template-columns:1fr}.menu{display:block!important}}
-.menu{display:none;background:#102a43}
-</style></head><body>
-<div id="login" class="login"><div class="loginbox"><div class="brand">LAAR <span>Institute</span></div><h2>Management System</h2><p class="muted">Principal Login</p><div id="loginErr" class="err hidden"></div><label>Username</label><input id="username" autocomplete="username"><label>Password</label><input id="password" type="password" autocomplete="current-password"><button style="width:100%;margin-top:16px" onclick="login()">Login</button></div></div>
-<div id="app" class="app hidden"><aside class="side"><h2>LAAR Institute</h2><div id="nav"></div><button onclick="logout()" style="margin-top:25px">Logout</button></aside><main class="content"><header><button class="menu" onclick="document.getElementById('app').classList.toggle('open')">☰</button><div><h1 id="title">Dashboard</h1><div class="muted" id="date"></div></div></header><div id="view"></div></main></div>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laar Institute Management System</title>
+<style>
+:root{--navy:#0b2341;--blue:#0d5bd7;--yellow:#f5c542;--bg:#f4f7fb;--card:#fff;--muted:#6b7280;--line:#e5e7eb;--danger:#c62828;--green:#137333}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.hidden{display:none!important}
+#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#071a31,#0d5bd7)}
+.login-card{width:min(430px,100%);background:#fff;border-radius:22px;padding:34px;box-shadow:0 24px 70px #0004}
+.logo{width:64px;height:64px;border-radius:16px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:900;margin:auto auto 14px}
+.login-card h1{text-align:center;margin:0 0 6px;color:var(--navy)}.login-card p{text-align:center;color:var(--muted);margin:0 0 24px}
+.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #d6dbe4;border-radius:10px;outline:none;background:#fff}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0d5bd71a}
+.primary{border:0;background:var(--blue);color:#fff;padding:12px 16px;border-radius:10px;font-weight:800;width:100%}
+.message{margin-top:12px;padding:10px 12px;border-radius:9px;font-size:13px}.error{background:#fff0f0;color:var(--danger)}.success{background:#effaf2;color:var(--green)}
+#app{min-height:100vh;display:flex}.sidebar{width:245px;background:var(--navy);color:#fff;padding:20px 14px;position:fixed;left:0;top:0;bottom:0;overflow:auto}
+.brand{font-size:19px;font-weight:900;padding:10px 10px 20px}.brand small{display:block;font-size:11px;font-weight:500;color:#b8c8dc;margin-top:4px}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#dbe7f6;text-align:left;padding:11px 12px;border-radius:9px}.nav button:hover,.nav button.active{background:#ffffff16;color:#fff}
+.main{margin-left:245px;width:calc(100% - 245px);padding:24px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.topbar h2{margin:0;color:var(--navy)}
+.logout{border:1px solid #d7dce5;background:#fff;padding:9px 14px;border-radius:9px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.card .num{font-size:28px;font-weight:900;color:var(--navy)}.card .label{font-size:13px;color:var(--muted);margin-top:4px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}.panel h3{margin:0 0 14px}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.form-grid .field{margin:0}.form-actions{grid-column:1/-1;display:flex;gap:10px}.form-actions button{width:auto}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{background:#f8fafc;color:#42506a}.del{border:0;background:#fff0f0;color:var(--danger);padding:6px 9px;border-radius:7px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.pill{display:inline-block;background:#edf4ff;color:var(--blue);padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800}
+.empty{color:var(--muted);padding:20px;text-align:center}
+@media(max-width:900px){.sidebar{position:static;width:100%;height:auto}.nav{grid-template-columns:repeat(2,1fr)}.main{margin-left:0;width:100%;padding:14px}.cards{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.app{display:block}}
+@media(max-width:520px){.cards{grid-template-columns:1fr}.topbar{align-items:flex-start}.nav{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<section id="loginPage">
+  <div class="login-card">
+    <div class="logo">LIT</div>
+    <h1>Laar Institute</h1>
+    <p>Management System</p>
+    <form id="loginForm">
+      <div class="field"><label for="usernameInput">Username</label><input id="usernameInput" autocomplete="username" required></div>
+      <div class="field"><label for="passwordInput">Password</label><input id="passwordInput" type="password" autocomplete="current-password" required></div>
+      <button id="loginBtn" class="primary" type="submit">Login</button>
+      <div id="loginMessage" class="message hidden"></div>
+    </form>
+  </div>
+</section>
+
+<section id="app" class="hidden">
+  <aside class="sidebar">
+    <div class="brand">LAAR INSTITUTE<small>Management System</small></div>
+    <nav id="nav" class="nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="topbar"><h2 id="pageTitle">Dashboard</h2><button id="logoutBtn" class="logout">Logout</button></div>
+    <div id="content"></div>
+  </main>
+</section>
+
 <script>
-const API="/api";let token=localStorage.getItem("lit_token"), data=null;
-const modules=[["dashboard","Dashboard"],["students","Students"],["teachers","Teachers"],["courses","Courses"],["outline","Course Outline"],["shifts","Shifts"],["batches","Batches"],["classes","Daily Classes"],["attendance","Attendance"],["progress","Progress"],["practical","Practical Work"],["tests","Tests & Results"]];
-function esc(x){return String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-async function api(path="",opts={}){opts.headers={...(opts.headers||{}),"Content-Type":"application/json",Authorization:"Bearer "+token};let r=await fetch(API+path,opts);if(r.status===401){logout();throw Error("Unauthorized")}return r.json()}
-async function login(){let r=await fetch(API+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:username.value,password:password.value})});let x=await r.json();if(!r.ok){loginErr.textContent=x.error;loginErr.classList.remove("hidden");return}localStorage.setItem("lit_token",x.token);token=x.token;start()}
-function logout(){localStorage.removeItem("lit_token");location.reload()}
-async function start(){if(!token)return;try{data=await api();document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");date.textContent=new Date().toLocaleDateString();nav.innerHTML=modules.map(m=>`<button onclick="show('${m[0]}')">${m[1]}</button>`).join("");show("dashboard")}catch(e){}}
-function save(entity,item){return api("",{method:"POST",body:JSON.stringify({entity,item})}).then(()=>api().then(x=>{data=x;show(current)}))}
-function del(entity,id){if(confirm("Delete this record?"))api("",{method:"DELETE",body:JSON.stringify({entity,id})}).then(()=>api().then(x=>{data=x;show(current)}))}
-let current="dashboard";
-function show(v){current=v;title.textContent=modules.find(x=>x[0]===v)?.[1]||"Dashboard";({dashboard,students,teachers,courses,outline,shifts,batches,classes,attendance,progress,practical,tests}[v])()}
-function formFields(fields){return fields.map(f=>`<div class="${f[2]?'full':''}"><label>${f[1]}</label>${f[3]||`<input id="${f[0]}" placeholder="${f[4]||""}">`}</div>`).join("")}
-function pick(id,label,arr,name="name"){return `<div><label>${label}</label><select id="${id}">${arr.map(x=>`<option value="${x.id}">${esc(x[name])}</option>`).join("")}</select></div>`}
-function dashboard(){let s=data.students.length,t=data.teachers.length,c=data.courses.length,sh=data.shifts.length;view.innerHTML=`<div class="cards"><div class="card stat">Active Students<b>${s}</b></div><div class="card stat">Teachers<b>${t}</b></div><div class="card stat">Courses<b>${c}</b></div><div class="card stat">Shifts<b>${sh}</b></div></div><div class="card"><h2>Institute Management</h2><p class="muted">Principal can manage students, teachers, courses, shifts, batches, daily classes, attendance, progress, practical work and tests from the menu.</p></div>`}
-function students(){let rows=data.students.map(s=>{let c=data.courses.find(x=>x.id===s.courseId)?.name||"-",sh=data.shifts.find(x=>x.id===s.shiftId)?.name||"-",t=data.teachers.find(x=>x.id===s.teacherId)?.name||"-";return `<tr><td>${esc(s.studentId)}</td><td>${esc(s.name)}</td><td>${esc(c)}</td><td>${esc(sh)}</td><td>${esc(t)}</td><td>${esc(s.status)}</td><td><button onclick="del('students','${s.id}')">Delete</button></td></tr>`}).join("");view.innerHTML=`<div class="card"><h2>Add New Student</h2><div class="form">${formFields([["sid","Student ID *"],["sn","Full Name *"],["father","Father Name"],["phone","Mobile"],["wa","WhatsApp"],["email","Email"],["edu","Education"],["admission","Admission Date"]])}${pick("sc","Course",data.courses)}${pick("ssh","Shift",data.shifts)}${pick("sb","Batch",data.batches)}${pick("st","Teacher",data.teachers)}<div><label>Status</label><select id="ss"><option>Active</option><option>Completed</option><option>On Hold</option><option>Dropped</option><option>Inactive</option></select></div><div class="full"><label>Address / Notes</label><textarea id="notes"></textarea></div></div><button onclick="addStudent()">Add Student</button></div><div class="card"><div class="topline"><h2>Student List</h2><input class="search" oninput="filterRows(this)" placeholder="Search..."></div><div class="table"><table><thead><tr><th>ID</th><th>Name</th><th>Course</th><th>Shift</th><th>Teacher</th><th>Status</th><th></th></tr></thead><tbody id="rows">${rows}</tbody></table></div></div>`}
-function addStudent(){save("students",{studentId:sid.value,name:sn.value,fatherName:father.value,phone:phone.value,whatsapp:wa.value,email:email.value,education:edu.value,admissionDate:admission.value||new Date().toISOString().slice(0,10),courseId:sc.value,shiftId:ssh.value,batchId:sb.value,teacherId:st.value,status:ss.value,notes:notes.value})}
-function teachers(){let rows=data.teachers.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(t.email||"")}</td><td>${data.students.filter(s=>s.teacherId===t.id).length}</td><td>${esc(t.status||"Active")}</td><td><button onclick="del('teachers','${t.id}')">Delete</button></td></tr>`).join("");view.innerHTML=`<div class="card"><h2>Add Teacher Account</h2><div class="form">${formFields([["tn","Full Name *"],["te","Email"],["tp","Mobile"],["tq","Qualification"]])}</div><button onclick="save('teachers',{name:tn.value,email:te.value,phone:tp.value,qualification:tq.value,status:'Active'})">Create Teacher</button></div><div class="card"><h2>Teachers</h2><div class="table"><table><tr><th>Name</th><th>Email</th><th>Students</th><th>Status</th><th></th></tr>${rows}</table></div></div>`}
-function courses(){let rows=data.courses.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.code)}</td><td>${esc(c.duration)}</td><td>${data.students.filter(s=>s.courseId===c.id).length}</td><td><button onclick="del('courses','${c.id}')">Delete</button></td></tr>`).join("");view.innerHTML=`<div class="card"><h2>Add Course</h2><div class="form">${formFields([["cn","Course Name *"],["cc","Code"],["cd","Duration"],["cx","Description",true])}</div><button onclick="save('courses',{name:cn.value,code:cc.value,duration:cd.value,description:cx.value})">Save Course</button></div><div class="card"><h2>Courses</h2><table><tr><th>Name</th><th>Code</th><th>Duration</th><th>Students</th><th></th></tr>${rows}</table></div>`}
-function shifts(){let rows=data.shifts.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.start)} – ${esc(s.end)}</td><td>${esc(s.days)}</td><td>${data.students.filter(x=>x.shiftId===s.id).length}</td><td><button onclick="del('shifts','${s.id}')">Delete</button></td></tr>`).join("");view.innerHTML=`<div class="card"><h2>Create Shift</h2><div class="form">${formFields([["shn","Shift Name *"],["shs","Start Time"],["she","End Time"],["shd","Days"]])}</div><button onclick="save('shifts',{name:shn.value,start:shs.value,end:she.value,days:shd.value})">Create Shift</button></div><div class="card"><h2>Shifts</h2><table><tr><th>Name</th><th>Time</th><th>Days</th><th>Students</th><th></th></tr>${rows}</table></div>`}
-function batches(){let rows=data.batches.map(b=>`<tr><td>${esc(b.name)}</td><td>${esc(data.courses.find(x=>x.id===b.courseId)?.name)}</td><td>${esc(data.shifts.find(x=>x.id===b.shiftId)?.name)}</td><td>${esc(data.teachers.find(x=>x.id===b.teacherId)?.name||"-")}</td><td>${data.students.filter(s=>s.batchId===b.id).length}</td><td><button onclick="del('batches','${b.id}')">Delete</button></td></tr>`).join("");view.innerHTML=`<div class="card"><h2>Create Batch</h2><div class="form">${formFields([["bn","Batch Name *"],["bd","Start Date"]])}${pick("bc","Course",data.courses)}${pick("bs","Shift",data.shifts)}${pick("bt","Teacher",data.teachers)}</div><button onclick="save('batches',{name:bn.value,startDate:bd.value,courseId:bc.value,shiftId:bs.value,teacherId:bt.value,status:'Active'})">Create Batch</button></div><div class="card"><h2>Batches</h2><table><tr><th>Batch</th><th>Course</th><th>Shift</th><th>Teacher</th><th>Students</th><th></th></tr>${rows}</table></div>`}
-function outline(){view.innerHTML=`<div class="card"><h2>Course Outline</h2><p class="muted">Create modules and topics for each course. Student progress uses these topics.</p>${data.courses.map(c=>`<div class="card" style="box-shadow:none;border:1px solid #e3eaf0"><h3>${esc(c.name)}</h3><button onclick="addModule('${c.id}')">+ Add Module</button>${data.modules.filter(m=>m.courseId===c.id).map(m=>`<div style="padding:12px;border-top:1px solid #eee"><b>${esc(m.name)}</b> <button onclick="addTopic('${m.id}')">+ Topic</button>${data.topics.filter(t=>t.moduleId===m.id).map(t=>`<div class="pill" style="margin:5px">${esc(t.name)}</div>`).join("")}</div>`).join("")}</div>`).join("")}</div>`}
-function addModule(cid){let n=prompt("Module name");if(n)save("modules",{courseId:cid,name:n})}
-function addTopic(mid){let n=prompt("Topic name");if(n)save("topics",{moduleId:mid,name:n})}
-function classes(){view.innerHTML=`<div class="card"><h2>Today's / Daily Class Record</h2><div class="form">${pick("lc","Course",data.courses)}${pick("lb","Batch",data.batches)}<div><label>Date</label><input id="ld" type="date" value="${new Date().toISOString().slice(0,10)}"></div><div><label>Module</label><input id="lm"></div><div class="full"><label>Today's Topic *</label><input id="lt"></div><div><label>Learning Objective</label><textarea id="lo"></textarea></div><div><label>Theory</label><textarea id="lth"></textarea></div><div><label>Practical</label><textarea id="lp"></textarea></div><div><label>Homework</label><textarea id="lh"></textarea></div><div><label>Next Topic</label><input id="ln"></div></div><button onclick="save('lessons',{date:ld.value,courseId:lc.value,batchId:lb.value,module:lm.value,topic:lt.value,objective:lo.value,theory:lth.value,practical:lp.value,homework:lh.value,nextTopic:ln.value})">Save Daily Class</button></div><div class="card"><h2>Class History</h2><table><tr><th>Date</th><th>Course</th><th>Batch</th><th>Topic</th><th>Next</th></tr>${data.lessons.slice().reverse().map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(data.courses.find(c=>c.id===x.courseId)?.name)}</td><td>${esc(data.batches.find(b=>b.id===x.batchId)?.name||"-")}</td><td>${esc(x.topic)}</td><td>${esc(x.nextTopic)}</td></tr>`).join("")}</table></div>`}
-function attendance(){let today=new Date().toISOString().slice(0,10);view.innerHTML=`<div class="card"><h2>Attendance</h2><label>Date</label><input id="ad" type="date" value="${today}"><div class="table"><table><tr><th>Student</th><th>Course</th><th>Shift</th><th>Status</th></tr>${data.students.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(data.courses.find(c=>c.id===s.courseId)?.name)}</td><td>${esc(data.shifts.find(x=>x.id===s.shiftId)?.name)}</td><td><select id="att_${s.id}"><option>Present</option><option>Absent</option><option>Late</option><option>Leave</option></select></td></tr>`).join("")}</table></div><button onclick="saveAttendance()">Save Attendance</button></div>`}
-function saveAttendance(){let date=ad.value;Promise.all(data.students.map(s=>saveRaw("attendance",{studentId:s.id,date,status:document.getElementById("att_"+s.id).value}))).then(()=>api().then(x=>{data=x;show("attendance")}))}
-async function saveRaw(entity,item){return api("",{method:"POST",body:JSON.stringify({entity,item})})}
-function progress(){view.innerHTML=`<div class="card"><h2>Student Progress</h2>${data.students.map(s=>{let topics=data.topics.filter(t=>data.modules.find(m=>m.id===t.moduleId)?.courseId===s.courseId),done=topics.filter(t=>data.progress.find(p=>p.studentId===s.id&&p.topicId===t.id&&p.status==="Completed")).length,pct=topics.length?Math.round(done/topics.length*100):0;return `<div style="margin:18px 0"><b>${esc(s.name)}</b><span class="muted"> — ${esc(data.courses.find(c=>c.id===s.courseId)?.name||"")}</span><div class="bar"><i style="width:${pct}%"></i></div><small>${pct}% (${done}/${topics.length} topics completed)</small><div class="actions" style="margin-top:7px"><button onclick="updateProgress('${s.id}')">Update Topics</button></div></div>`}).join("")}</div>`}
-function updateProgress(sid){let s=data.students.find(x=>x.id===sid),ts=data.topics.filter(t=>data.modules.find(m=>m.id===t.moduleId)?.courseId===s.courseId);ts.forEach(t=>{let p=data.progress.find(x=>x.studentId===sid&&x.topicId===t.id);let v=prompt("Status for "+t.name+" (Pending / In Progress / Completed)",p?.status||"Pending");if(v&&["Pending","In Progress","Completed"].includes(v))saveRaw("progress",{studentId:sid,topicId:t.id,status:v})});setTimeout(()=>api().then(x=>{data=x;show("progress")}),500)}
-function practical(){view.innerHTML=`<div class="card"><h2>Practical Work</h2><div class="form">${pick("ps","Student",data.students)}<div><label>Task</label><input id="pt"></div><div><label>Status</label><select id="pst"><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Needs Improvement</option></select></div><div><label>Remarks</label><input id="pr"></div></div><button onclick="save('practicals',{studentId:ps.value,title:pt.value,status:pst.value,remarks:pr.value})">Save Practical Task</button></div><div class="card"><table><tr><th>Student</th><th>Task</th><th>Status</th><th>Remarks</th></tr>${data.practicals.slice().reverse().map(p=>`<tr><td>${esc(data.students.find(s=>s.id===p.studentId)?.name)}</td><td>${esc(p.title)}</td><td>${esc(p.status)}</td><td>${esc(p.remarks)}</td></tr>`).join("")}</table></div>`}
-function tests(){view.innerHTML=`<div class="grid"><div class="card"><h2>Create Test</h2><div class="form">${formFields([["tnm","Test Name *"],["td","Date"]])}${pick("tc","Course",data.courses)}<div><label>Total Marks</label><input id="tm" type="number" value="100"></div><div><label>Passing Marks</label><input id="pm" type="number" value="40"></div></div><button onclick="save('tests',{name:tnm.value,date:td.value,courseId:tc.value,total:tm.value,passing:pm.value})">Create Test</button></div><div class="card"><h2>Enter Result</h2>${pick("rt","Test",data.tests,"name")}${pick("rs","Student",data.students)}<label>Marks</label><input id="rm" type="number"><label>Remarks</label><input id="rr"><button onclick="save('results',{testId:rt.value,studentId:rs.value,marks:rm.value,remarks:rr.value})">Save Result</button></div></div><div class="card"><h2>Results</h2><table><tr><th>Test</th><th>Student</th><th>Marks</th><th>Remarks</th></tr>${data.results.slice().reverse().map(r=>`<tr><td>${esc(data.tests.find(t=>t.id===r.testId)?.name)}</td><td>${esc(data.students.find(s=>s.id===r.studentId)?.name)}</td><td>${esc(r.marks)}</td><td>${esc(r.remarks)}</td></tr>`).join("")}</table></div>`}
-function filterRows(i){let q=i.value.toLowerCase();document.querySelectorAll("#rows tr").forEach(r=>r.style.display=r.innerText.toLowerCase().includes(q)?"":"none")}
-start();
-</script></body></html>
+"use strict";
+
+const state = { token: localStorage.getItem("lit_token") || "", data: {}, page: "dashboard" };
+const entities = {
+  students: {title:"Students", fields:["name","father","phone","course","teacher","shift","batch","admissionDate"]},
+  teachers: {title:"Teachers", fields:["name","phone","specialization","email"]},
+  courses: {title:"Courses", fields:["name","duration","fee","description"]},
+  shifts: {title:"Shifts", fields:["name","start","end"]},
+  batches: {title:"Batches", fields:["name","course","shift","startDate"]},
+  modules: {title:"Modules", fields:["course","name","order"]},
+  topics: {title:"Topics", fields:["course","module","name","order"]},
+  lessons: {title:"Daily Classes", fields:["date","course","teacher","topic","details"]},
+  attendance: {title:"Attendance", fields:["date","student","status","remarks"]},
+  progress: {title:"Progress", fields:["student","topic","status","remarks"]},
+  practicals: {title:"Practical Work", fields:["date","student","title","status","remarks"]},
+  tests: {title:"Tests", fields:["date","course","title","totalMarks"]},
+  results: {title:"Results", fields:["test","student","marks","grade","remarks"]}
+};
+
+const navItems = [
+  ["dashboard","Dashboard"],
+  ["students","Students"],
+  ["teachers","Teachers"],
+  ["courses","Courses"],
+  ["modules","Course Outline"],
+  ["lessons","Daily Classes"],
+  ["attendance","Attendance"],
+  ["progress","Progress"],
+  ["practicals","Practical Work"],
+  ["tests","Tests & Results"],
+  ["shifts","Shifts"],
+  ["batches","Batches"]
+];
+
+const $ = (id) => document.getElementById(id);
+
+function showLoginMessage(message, ok=false){
+  const el=$("loginMessage"); el.textContent=message; el.className="message "+(ok?"success":"error");
+}
+function setLoggedIn(on){
+  $("loginPage").classList.toggle("hidden",on);
+  $("app").classList.toggle("hidden",!on);
+}
+async function api(path, options={}){
+  const headers={"content-type":"application/json",...(options.headers||{})};
+  if(state.token) headers.authorization="Bearer "+state.token;
+  const res=await fetch("/api/"+path,{...options,headers});
+  let body={};
+  try{body=await res.json()}catch{}
+  if(!res.ok) throw new Error(body.message || ("Request failed ("+res.status+")"));
+  return body;
+}
+
+async function loginUser(event){
+  event.preventDefault();
+  const btn=$("loginBtn"); btn.disabled=true; btn.textContent="Signing in...";
+  try{
+    const body=await api("login",{method:"POST",body:JSON.stringify({
+      username:$("usernameInput").value.trim(),
+      password:$("passwordInput").value
+    })});
+    state.token=body.token; localStorage.setItem("lit_token",state.token);
+    showLoginMessage("Login successful.",true);
+    await loadData();
+    setLoggedIn(true);
+    renderNav();
+    render();
+  }catch(err){
+    showLoginMessage(err.message || "Login failed.");
+  }finally{
+    btn.disabled=false; btn.textContent="Login";
+  }
+}
+
+async function loadData(){
+  const body=await api("data");
+  state.data=body.data || {};
+}
+
+async function logout(){
+  try{await api("logout",{method:"POST",body:"{}"});}catch{}
+  state.token=""; localStorage.removeItem("lit_token"); setLoggedIn(false);
+  $("passwordInput").value="";
+}
+
+function renderNav(){
+  $("nav").innerHTML=navItems.map(([id,label]) =>
+    `<button class="${state.page===id?"active":""}" data-page="${id}">${label}</button>`
+  ).join("");
+  $("nav").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{state.page=b.dataset.page;renderNav();render();}));
+}
+
+function count(name){return Array.isArray(state.data[name])?state.data[name].length:0}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function renderDashboard(){
+  const cards=[
+    ["students","Students"],["teachers","Teachers"],["courses","Courses"],["attendance","Attendance"],
+    ["practicals","Practical Work"],["tests","Tests"],["results","Results"],["lessons","Daily Classes"]
+  ];
+  $("content").innerHTML=`<div class="cards">${cards.map(([k,l])=>`<div class="card"><div class="num">${count(k)}</div><div class="label">${l}</div></div>`).join("")}</div>
+  <div class="panel"><h3>Welcome to Laar Institute Management System</h3>
+  <p style="color:#667085;margin:0">Manage students, teachers, courses, daily classes, attendance, progress, practical work and tests from one place.</p></div>`;
+}
+
+function renderEntity(key){
+  const meta=entities[key], list=Array.isArray(state.data[key])?state.data[key]:[];
+  $("content").innerHTML=`
+    <div class="panel">
+      <div class="section-title"><h3>Add ${meta.title}</h3><span class="pill">${list.length} records</span></div>
+      <form id="entityForm" class="form-grid">
+        ${meta.fields.map(f=>`<div class="field"><label>${labelFor(f)}</label><input name="${f}" ${f.toLowerCase().includes("date")||f==="date"||f==="startDate"?"type=date":""}></div>`).join("")}
+        <div class="form-actions"><button class="primary" type="submit">Save Record</button></div>
+        <div id="entityMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>
+    <div class="panel"><h3>${meta.title} List</h3><div class="table-wrap">${tableHtml(key,list)}</div></div>`;
+  $("entityForm").addEventListener("submit",(e)=>saveEntity(e,key));
+}
+
+function labelFor(f){return f.replace(/([A-Z])/g," $1").replace(/^./,s=>s.toUpperCase())}
+
+function tableHtml(key,list){
+  if(!list.length)return `<div class="empty">No records yet.</div>`;
+  const fields=entities[key].fields;
+  return `<table><thead><tr>${fields.map(f=>`<th>${labelFor(f)}</th>`).join("")}<th>Action</th></tr></thead><tbody>
+  ${list.map(r=>`<tr>${fields.map(f=>`<td>${escapeHtml(r[f])}</td>`).join("")}<td><button class="del" data-id="${escapeHtml(r.id)}">Delete</button></td></tr>`).join("")}</tbody></table>`;
+}
+
+async function saveEntity(event,key){
+  event.preventDefault();
+  const form=event.currentTarget; const record=Object.fromEntries(new FormData(form).entries());
+  try{
+    await api("data",{method:"POST",body:JSON.stringify({entity:key,record})});
+    await loadData(); render();
+  }catch(err){
+    const m=$("entityMessage"); m.textContent=err.message; m.className="message error"; 
+  }
+}
+
+async function deleteRecord(key,id){
+  if(!confirm("Delete this record?"))return;
+  try{await api("data",{method:"DELETE",body:JSON.stringify({entity:key,id})});await loadData();render();}
+  catch(err){alert(err.message);}
+}
+
+function renderTests(){
+  const tests=state.data.tests||[], results=state.data.results||[];
+  $("content").innerHTML=`<div class="panel"><h3>Tests & Results</h3>
+  <p style="color:#667085">Create tests first, then record student results below.</p></div>
+  <div class="panel"><h3>Tests</h3><div class="table-wrap">${tableHtml("tests",tests)}</div></div>
+  <div class="panel"><h3>Results</h3><div class="table-wrap">${tableHtml("results",results)}</div></div>`;
+  document.querySelectorAll(".del").forEach(btn=>{
+    const parent=btn.closest(".panel"); const key=parent?.querySelector("h3")?.textContent==="Tests"?"tests":"results";
+    btn.addEventListener("click",()=>deleteRecord(key,btn.dataset.id));
+  });
+}
+
+function render(){
+  const title=navItems.find(x=>x[0]===state.page)?.[1]||"Dashboard";
+  $("pageTitle").textContent=title;
+  if(state.page==="dashboard") renderDashboard();
+  else if(state.page==="tests") renderTests();
+  else renderEntity(state.page);
+  document.querySelectorAll(".del").forEach(btn=>{
+    const key=state.page==="tests"?"tests":state.page;
+    btn.addEventListener("click",()=>deleteRecord(key,btn.dataset.id));
+  });
+}
+
+$("loginForm").addEventListener("submit",loginUser);
+$("logoutBtn").addEventListener("click",logout);
+
+(async function boot(){
+  if(!state.token){setLoggedIn(false);return;}
+  try{await loadData();setLoggedIn(true);renderNav();render();}
+  catch{state.token="";localStorage.removeItem("lit_token");setLoggedIn(false);}
+})();
+</script>
+</body>
+</html>
